@@ -14,10 +14,11 @@ var port = process.env.PORT || 3000;
 
 server.title = 'Water da Zones2';
 
-server.listen(port, function () {
-  console.log(`${server.title} is running on port ${port}`);
-});
-
+if (!module.parent) {
+  server.listen(port, function () {
+    console.log(`${server.title} is running on port ${port}`);
+  });
+}
 
 app.use(require('webpack-dev-middleware')(compiler, {
   noInfo: true,
@@ -35,7 +36,7 @@ io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
 
   io.sockets.emit('usersConnected', io.engine.clientsCount);
-  socket.emit('statusMessage', "HEY DUDE");
+  // socket.emit('usersConnected', io.engine.clientsCount);
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
@@ -43,11 +44,4 @@ io.on('connection', function (socket) {
   });
 });
 
-
-module.exports = server;
-// app.listen(app.get('port'), 'localhost', function (err) {
-//   if (err) {
-//     return console.error(err);
-//   }
-//   console.log(`${app.locals.title} is running on port ${app.get('port')}`);
-// });
+module.exports = {server: server, io: io};
